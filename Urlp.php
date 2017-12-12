@@ -33,12 +33,13 @@ class Urlp
 		$extended = false;
 
 		# Set Urlp Shortener API target
-		$this->target = 'http://api.urlp.com/v1/url?';
+		$this->target = 'http://api.urlp.me/v1/urls';
+		
 
 		# Set API key if available
 		if ( $apiKey != null ) {
 			$this->apiKey = $apiKey;
-			$this->target .= 'key='.$apiKey.'&';
+			
 		}
 
 		# Initialize cURL
@@ -58,17 +59,17 @@ class Urlp
 		
 		# Payload
 		$data = array( 'url' => $url );
-		//$data_string = '{ "url": "'.$url.'" }';
+		
 
 		# Set cURL options
 		curl_setopt($this->ch, CURLOPT_POST, count($data));
-		//curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data_string);
-		curl_setopt($this->ch, CURLOPT_HTTPHEADER, Array('Content-Type: application/json','Authorization: Bearer '.$this->apiKey));
+		curl_setopt($this->ch, CURLOPT_POSTFIELDS, "url=".$url);
+		curl_setopt($this->ch, CURLOPT_HTTPHEADER, Array('Authorization: Bearer '.$this->apiKey));
 
 		if ( $extended || $this->extended) {
 			return json_decode(curl_exec($this->ch));
-		} else {
-			$ret = json_decode(curl_exec($this->ch))->id;
+		} else {			
+			$ret = json_decode(curl_exec($this->ch))->data;			
 			self::$buffer[$url] = $ret;
 			return $ret;
 		}
